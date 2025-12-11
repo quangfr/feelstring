@@ -183,36 +183,6 @@
             gap: 6px;
         }
 
-        .transpose-controls {
-            display: inline-flex;
-            flex-direction: column;
-            gap: 4px;
-            align-items: center;
-            justify-content: center;
-            padding: 4px 0;
-        }
-
-        .transpose-btn {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text);
-            border-radius: 999px;
-            width: 32px;
-            height: 32px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .transpose-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .transpose-btn.is-active {
-            border-color: var(--accent);
-            background: rgba(255, 179, 71, 0.25);
-        }
-
         .chord-pill {
             padding: 4px 10px;
             border-radius: 999px;
@@ -522,11 +492,6 @@
 
             <div class="progression-row">
                 <div class="progression" id="progression"></div>
-                <div class="transpose-controls" aria-label="Transpose chords">
-                    <button type="button" class="transpose-btn" data-action="decrement" aria-label="Transpose down one semitone">−</button>
-                    <button type="button" class="transpose-btn" data-action="auto" aria-label="Auto choose easy chords">Auto</button>
-                    <button type="button" class="transpose-btn" data-action="increment" aria-label="Transpose up one semitone">+</button>
-                </div>
             </div>
             <div class="chord-drawer" id="chordDrawer" hidden>
                 <div class="chord-drawer__header">
@@ -575,7 +540,7 @@
         };
 
         const noteNameToSemitone = {
-            C: 0, "C#": 1, Db: 1, D: 2, "D#": 3, Eb: 3, E: 4, Fb: 4, E#: 5, F: 5, "F#": 6, Gb: 6,
+            C: 0, "C#": 1, Db: 1, D: 2, "D#": 3, Eb: 3, E: 4, Fb: 4, "E#": 5, F: 5, "F#": 6, Gb: 6,
             G: 7, "G#": 8, Ab: 8, A: 9, "A#": 10, Bb: 10, B: 11, Cb: 11
         };
 
@@ -1132,17 +1097,13 @@
             return audioCtx;
         }
 
-        let currentTransposition = 0;
-        const transposeLimit = 6;
-        let autoModeActive = false;
-
         function playChord(chordName, startTime, duration = 0.8) {
             const ctx = getAudioContext();
             const notes = chords[chordName] || [];
             notes.forEach(note => {
                 const freq = getNoteFrequency(note);
                 if (!freq) return;
-                const pitch = freq * Math.pow(2, currentTransposition / 12);
+                const pitch = freq;
 
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
