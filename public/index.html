@@ -175,13 +175,13 @@
 
         .progression {
             margin-top: 4px;
-            padding: 8px 8px 6px;
+            padding: 4px 4px 3px;
             border-radius: 14px;
             background: rgba(255, 255, 255, 0.02);
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            min-height: 40px;
+            gap: 4px;
+            min-height: 32px;
         }
 
         .progression-row {
@@ -204,9 +204,9 @@
             background: rgba(0, 0, 0, 0.3);
             color: var(--text);
             border-radius: 999px;
-            width: 32px;
-            height: 32px;
-            font-size: 15px;
+            width: 26px;
+            height: 26px;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -227,10 +227,10 @@
 
         .chord-pill {
             padding: 2px 6px;
-            min-height: 32px;
+            min-height: 26px;
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            font-size: 0.8rem;
+            font-size: 13px;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(6px);
             cursor: pointer;
@@ -481,7 +481,7 @@
                 </h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">v2025.12.11.6</div>
+            <div class="pill">v2025.12.11.7</div>
         </header>
 
         <section class="emotion-section">
@@ -526,7 +526,7 @@
         <section class="panel">
             <div class="panel-header">
                 <div class="panel-header-left">
-                    <span class="panel-title">Current progression</span>
+                    <span class="panel-title">Chord progression</span>
                     <span class="panel-current" id="currentEmotion">—</span>
                     <span class="panel-sub" id="currentSub">Tap a mood to get 1 of 10 variations</span>
                 </div>
@@ -594,6 +594,7 @@
             C: 0, "C#": 1, Db: 1, D: 2, "D#": 3, Eb: 3, E: 4, Fb: 4, "E#": 5, F: 5, "F#": 6, Gb: 6,
             G: 7, "G#": 8, Ab: 8, A: 9, "A#": 10, Bb: 10, B: 11, Cb: 11
         };
+        const sharpNoteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
         function getNoteFrequency(noteName) {
             if (noteFreq[noteName]) {
@@ -609,6 +610,28 @@
             const freq = 440 * Math.pow(2, (midiNumber - 69) / 12);
             noteFreq[noteName] = freq;
             return freq;
+        }
+
+        function transposeNoteName(note, offset) {
+            const semitone = noteNameToSemitone[note];
+            if (semitone === undefined) return note;
+            const normalized = (semitone + offset + 12) % 12;
+            return sharpNoteNames[normalized] || note;
+        }
+
+        function transposeChordName(chordName, offset) {
+            if (!offset) return chordName;
+            const [main, bass] = chordName.split("/");
+            const match = main.match(/^([A-G](?:#|b)?)(.*)$/);
+            if (!match) return chordName;
+            const [, root, suffix] = match;
+            const transposedRoot = transposeNoteName(root, offset);
+            let result = transposedRoot + (suffix || "");
+            if (bass) {
+                const transposedBass = transposeNoteName(bass, offset);
+                result += `/${transposedBass}`;
+            }
+            return result;
         }
 
         // ---------- Chord voicings (simple, open-ish) ----------
@@ -1083,6 +1106,7 @@
             G7: { positions: [3, 2, 0, 0, 0, 1] }
         };
         let currentActiveChord = null;
+        let currentProgChords = [];
         const CHORD_SVG_NS = "http://www.w3.org/2000/svg";
 
         const baseEmotions = {
@@ -1360,26 +1384,10 @@
             currentEmotionEl.textContent = emo.emoji + " " + emo.label + ` · #${idx + 1}/${listLength}`;
             currentSubEl.textContent = emo.description;
 
-            progressionEl.innerHTML = "";
-            prog.chords.forEach(chord => {
-                const span = document.createElement("span");
-                span.className = "chord-pill";
-                span.textContent = chord;
-                span.setAttribute("role", "button");
-                span.tabIndex = 0;
-                span.setAttribute("aria-label", chord + " chord diagram");
-                span.addEventListener("click", () => showChordDrawer(prog.chords, chord));
-                span.addEventListener("keydown", event => {
-                    if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        showChordDrawer(prog.chords, chord);
-                    }
-                });
-                progressionEl.appendChild(span);
-            });
-
-            const defaultChord = prog.chords[0] || null;
-            showChordDrawer(prog.chords, defaultChord);
+            currentProgChords = prog.chords;
+            const defaultChord = currentProgChords[0] || null;
+            currentActiveChord = defaultChord;
+            refreshChordDisplay();
 
             metaNameEl.textContent = prog.name;
             metaStyleEl.textContent = styleInfo ? `${styleInfo.emoji} ${styleInfo.label} · ${styleInfo.summary}` : "—";
@@ -1388,6 +1396,36 @@
             metaExtraEl.textContent = safeMetaValue(buildExtraText(prog, styleKey));
 
             replayBtn.disabled = false;
+        }
+
+        function refreshChordDisplay() {
+            if (!progressionEl) return;
+            progressionEl.innerHTML = "";
+            if (!currentProgChords.length) return;
+
+            currentProgChords.forEach(chord => {
+                const span = document.createElement("span");
+                span.className = "chord-pill";
+                span.textContent = transposeChordName(chord, currentTransposition);
+                span.setAttribute("role", "button");
+                span.tabIndex = 0;
+                span.setAttribute("aria-label", chord + " chord diagram");
+                span.addEventListener("click", () => {
+                    currentActiveChord = chord;
+                    showChordDrawer(currentProgChords, chord);
+                });
+                span.addEventListener("keydown", event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        currentActiveChord = chord;
+                        showChordDrawer(currentProgChords, chord);
+                    }
+                });
+                progressionEl.appendChild(span);
+            });
+
+            const activeChord = currentActiveChord || currentProgChords[0];
+            showChordDrawer(currentProgChords, activeChord);
         }
 
         function pickStyleForEmotion(emotionKey) {
@@ -1476,11 +1514,17 @@
                 if (nextValue > transposeLimit || nextValue < -transposeLimit) return;
                 currentTransposition = nextValue;
                 updateTransposeUi();
+                refreshChordDisplay();
             });
         });
 
         updateStyleButtons();
         updateTransposeUi();
+
+        const defaultProg = setActiveEmotion("happy");
+        if (defaultProg) {
+            playProgressionObject(defaultProg);
+        }
 
         emotionsContainer.addEventListener("click", e => {
             const btn = e.target.closest(".emotion-btn");
