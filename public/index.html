@@ -170,7 +170,7 @@
             margin-top: 4px;
             padding: 8px 8px 6px;
             border-radius: 14px;
-            background: radial-gradient(circle at top left, rgba(255, 179, 71, 0.12), rgba(255, 255, 255, 0.02));
+            background: rgba(255, 255, 255, 0.02);
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
@@ -180,7 +180,42 @@
         .progression-row {
             display: flex;
             align-items: flex-start;
+            gap: 12px;
+        }
+
+        .transpose-stack {
+            display: flex;
+            flex-direction: row;
             gap: 6px;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+        }
+
+        .transpose-stack button {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text);
+            border-radius: 999px;
+            width: 32px;
+            height: 32px;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .transpose-stack button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .transpose-value {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
         }
 
         .chord-pill {
@@ -492,11 +527,17 @@
 
             <div class="progression-row">
                 <div class="progression" id="progression"></div>
+                <div class="progression transpose-stack" aria-label="Transpose chords">
+                    <button type="button" class="transpose-btn" data-transpose-action="decrement"
+                        aria-label="Transpose down one semitone">−</button>
+                    <span class="transpose-value" id="transposeValue">0</span>
+                    <button type="button" class="transpose-btn" data-transpose-action="increment"
+                        aria-label="Transpose up one semitone">+</button>
+                </div>
             </div>
-            <div class="chord-drawer" id="chordDrawer" hidden>
+            <div class="chord-drawer" id="chordDrawer">
                 <div class="chord-drawer__header">
                     <span>Chord diagrams</span>
-                    <button type="button" class="chord-drawer__close" id="chordDrawerClose" aria-label="Close chord drawer">×</button>
                 </div>
                 <div class="chord-drawer__grid" id="chordDrawerGrid"></div>
             </div>
@@ -1031,6 +1072,7 @@
             G5: { positions: [3, 5, 5, -1, -1, -1] },
             G7: { positions: [3, 2, 0, 0, 0, 1] }
         };
+        let currentActiveChord = null;
         const CHORD_SVG_NS = "http://www.w3.org/2000/svg";
 
         const baseEmotions = {
@@ -1097,13 +1139,16 @@
             return audioCtx;
         }
 
+        let currentTransposition = 0;
+        const transposeLimit = 6;
+
         function playChord(chordName, startTime, duration = 0.8) {
             const ctx = getAudioContext();
             const notes = chords[chordName] || [];
             notes.forEach(note => {
                 const freq = getNoteFrequency(note);
                 if (!freq) return;
-                const pitch = freq;
+                const pitch = freq * Math.pow(2, currentTransposition / 12);
 
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -1146,7 +1191,8 @@
         const styleButtons = document.querySelectorAll(".style-btn");
         const chordDrawer = document.getElementById("chordDrawer");
         const chordDrawerGrid = document.getElementById("chordDrawerGrid");
-        const chordDrawerClose = document.getElementById("chordDrawerClose");
+        const transposeValueEl = document.getElementById("transposeValue");
+        const transposeButtons = document.querySelectorAll(".transpose-btn");
 
         let currentEmotionKey = null;
         let currentProgIndex = null;
@@ -1178,15 +1224,6 @@
             if (prog.extra) parts.push(prog.extra);
             if (modifier?.extraNote) parts.push(modifier.extraNote);
             return parts.join(" ");
-        }
-
-        function hideChordDrawer() {
-            if (chordDrawer) {
-                chordDrawer.hidden = true;
-            }
-            if (chordDrawerGrid) {
-                chordDrawerGrid.innerHTML = "";
-            }
         }
 
         function createChordSvg(chordName) {
@@ -1301,7 +1338,7 @@
             chords.forEach(chordName => {
                 chordDrawerGrid.appendChild(createChordCard(chordName, chordName === activeChord));
             });
-            chordDrawer.hidden = false;
+            currentActiveChord = activeChord || null;
         }
 
         function pickRandomIndex(arr) {
@@ -1314,7 +1351,6 @@
             currentSubEl.textContent = emo.description;
 
             progressionEl.innerHTML = "";
-            hideChordDrawer();
             prog.chords.forEach(chord => {
                 const span = document.createElement("span");
                 span.className = "chord-pill";
@@ -1331,6 +1367,9 @@
                 });
                 progressionEl.appendChild(span);
             });
+
+            const defaultChord = prog.chords[0] || null;
+            showChordDrawer(prog.chords, defaultChord);
 
             metaNameEl.textContent = prog.name;
             metaStyleEl.textContent = styleInfo ? `${styleInfo.emoji} ${styleInfo.label} · ${styleInfo.summary}` : "—";
@@ -1404,11 +1443,34 @@
             });
         });
 
-        updateStyleButtons();
-
-        if (chordDrawerClose) {
-            chordDrawerClose.addEventListener("click", hideChordDrawer);
+        function updateTransposeUi() {
+            if (transposeValueEl) {
+                transposeValueEl.textContent = currentTransposition > 0 ? `+${currentTransposition}` : `${currentTransposition}`;
+            }
+            transposeButtons.forEach(btn => {
+                const action = btn.dataset.transposeAction;
+                if (action === "increment") {
+                    btn.disabled = currentTransposition >= transposeLimit;
+                } else if (action === "decrement") {
+                    btn.disabled = currentTransposition <= -transposeLimit;
+                }
+            });
         }
+
+        transposeButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const action = btn.dataset.transposeAction;
+                if (!action) return;
+                const delta = action === "increment" ? 1 : -1;
+                const nextValue = currentTransposition + delta;
+                if (nextValue > transposeLimit || nextValue < -transposeLimit) return;
+                currentTransposition = nextValue;
+                updateTransposeUi();
+            });
+        });
+
+        updateStyleButtons();
+        updateTransposeUi();
 
         emotionsContainer.addEventListener("click", e => {
             const btn = e.target.closest(".emotion-btn");
