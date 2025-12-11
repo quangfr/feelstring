@@ -1,4 +1,4 @@
-const CACHE_NAME = "feel-string-v2025-12-11.4";
+const CACHE_NAME = "feel-string-v2025-12-11.5";
 const ASSETS = [
   "./",
   "./index.html",

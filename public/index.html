@@ -73,6 +73,13 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .brand-logo {
+            width: 1.5em;
+            height: 1.5em;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
         .emotions {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -468,10 +475,12 @@
     <div class="app">
         <header>
             <div>
-                <h1>Feel String 🎸</h1>
+                <h1>Feel String
+                    <img src="assets/icons/logo.svg" alt="Feel String logo" class="brand-logo" />
+                </h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">v2025.12.11.4</div>
+            <div class="pill">v2025.12.11.5</div>
         </header>
 
         <section class="emotion-section">
