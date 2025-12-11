@@ -219,7 +219,7 @@
         }
 
         .transpose-value {
-            font-size: 0.78rem;
+            font-size: 13px;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--muted);
@@ -481,7 +481,7 @@
                 </h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">v2025.12.11.7</div>
+            <div class="pill">v2025.12.11.8</div>
         </header>
 
         <section class="emotion-section">
@@ -1107,6 +1107,7 @@
         };
         let currentActiveChord = null;
         let currentProgChords = [];
+        let currentTransposedChords = [];
         const CHORD_SVG_NS = "http://www.w3.org/2000/svg";
 
         const baseEmotions = {
@@ -1354,13 +1355,13 @@
             return svg;
         }
 
-        function createChordCard(chordName, isActive) {
+        function createChordCard(chordObj, isActive) {
             const card = document.createElement("div");
             card.className = "chord-card" + (isActive ? " is-active" : "");
-            const svg = createChordSvg(chordName);
+            const svg = createChordSvg(chordObj.original);
             const label = document.createElement("span");
             label.className = "chord-card__label";
-            label.textContent = chordName;
+            label.textContent = chordObj.label;
             card.appendChild(svg);
             card.appendChild(label);
             return card;
@@ -1369,8 +1370,8 @@
         function showChordDrawer(chords, activeChord) {
             if (!chordDrawer || !chordDrawerGrid) return;
             chordDrawerGrid.innerHTML = "";
-            chords.forEach(chordName => {
-                chordDrawerGrid.appendChild(createChordCard(chordName, chordName === activeChord));
+            chords.forEach(chordObj => {
+                chordDrawerGrid.appendChild(createChordCard(chordObj, chordObj.original === activeChord));
             });
             currentActiveChord = activeChord || null;
         }
@@ -1403,29 +1404,34 @@
             progressionEl.innerHTML = "";
             if (!currentProgChords.length) return;
 
-            currentProgChords.forEach(chord => {
+            currentTransposedChords = currentProgChords.map(chord => ({
+                original: chord,
+                label: transposeChordName(chord, currentTransposition)
+            }));
+
+            currentTransposedChords.forEach(chordObj => {
                 const span = document.createElement("span");
                 span.className = "chord-pill";
-                span.textContent = transposeChordName(chord, currentTransposition);
+                span.textContent = chordObj.label;
                 span.setAttribute("role", "button");
                 span.tabIndex = 0;
-                span.setAttribute("aria-label", chord + " chord diagram");
+                span.setAttribute("aria-label", chordObj.label + " chord diagram");
                 span.addEventListener("click", () => {
-                    currentActiveChord = chord;
-                    showChordDrawer(currentProgChords, chord);
+                    currentActiveChord = chordObj.original;
+                    showChordDrawer(currentTransposedChords, chordObj.original);
                 });
                 span.addEventListener("keydown", event => {
                     if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        currentActiveChord = chord;
-                        showChordDrawer(currentProgChords, chord);
+                        currentActiveChord = chordObj.original;
+                        showChordDrawer(currentTransposedChords, chordObj.original);
                     }
                 });
                 progressionEl.appendChild(span);
             });
 
             const activeChord = currentActiveChord || currentProgChords[0];
-            showChordDrawer(currentProgChords, activeChord);
+            showChordDrawer(currentTransposedChords, activeChord);
         }
 
         function pickStyleForEmotion(emotionKey) {
