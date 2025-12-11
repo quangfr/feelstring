@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Feel Strings</title>
+    <title>Feel String</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
     <meta name="theme-color" content="#111111" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -205,6 +205,58 @@
             margin-top: 2px;
         }
 
+        .install-banner {
+            position: fixed;
+            inset: auto 16px 24px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(5, 6, 12, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(16px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .install-banner.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .install-banner .text {
+            flex: 1;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .install-banner button {
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .install-banner button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .install-banner button.dismiss {
+            background: transparent;
+            font-size: 1rem;
+            padding: 2px 6px;
+        }
+
         .play-meta {
             margin-top: 8px;
             padding-top: 6px;
@@ -245,10 +297,10 @@
     <div class="app">
         <header>
             <div>
-                <h1>Feel Strings 🎸</h1>
+                <h1>Feel String 🎸</h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">Advanced · v2</div>
+            <div class="pill">v2025.12.11.1</div>
         </header>
 
         <section>
@@ -317,6 +369,12 @@
                 Best with headphones · triangle synth, use this as a practice companion.
             </div>
         </section>
+    </div>
+
+    <div class="install-banner" id="installBanner" aria-live="polite">
+        <div class="text">Install Feel String for quick access & offline practice.</div>
+        <button id="installBtn">Install</button>
+        <button class="dismiss" id="installDismiss" aria-label="Dismiss install prompt">×</button>
     </div>
 
     <script>
@@ -962,6 +1020,72 @@
             playProgressionObject(prog);
         });
 
+        const installBanner = document.getElementById("installBanner");
+        const installBtn = document.getElementById("installBtn");
+        const installDismiss = document.getElementById("installDismiss");
+        const INSTALL_FLAG = "feel-string-install-dismissed";
+        let deferredPrompt = null;
+
+        function showInstallBanner() {
+            if (!installBanner) return;
+            installBanner.classList.add("is-visible");
+        }
+
+        function hideInstallBanner() {
+            if (!installBanner) return;
+            installBanner.classList.remove("is-visible");
+        }
+
+        function markInstallBannerDone() {
+            try {
+                localStorage.setItem(INSTALL_FLAG, "true");
+            } catch (err) {
+                // ignore (private mode)
+            }
+        }
+
+        function shouldPromptInstall() {
+            try {
+                return !localStorage.getItem(INSTALL_FLAG);
+            } catch (err) {
+                return true;
+            }
+        }
+
+        window.addEventListener("beforeinstallprompt", event => {
+            if (!shouldPromptInstall()) return;
+            event.preventDefault();
+            deferredPrompt = event;
+            showInstallBanner();
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener("click", async () => {
+                if (!deferredPrompt) return;
+                hideInstallBanner();
+                deferredPrompt.prompt();
+                const choice = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (choice.outcome === "accepted") {
+                    markInstallBannerDone();
+                } else {
+                    showInstallBanner();
+                }
+            });
+        }
+
+        if (installDismiss) {
+            installDismiss.addEventListener("click", () => {
+                hideInstallBanner();
+                markInstallBannerDone();
+            });
+        }
+
+        window.addEventListener("appinstalled", () => {
+            markInstallBannerDone();
+            hideInstallBanner();
+        });
+
         // ---------- PWA: service worker registration (optional) ----------
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
@@ -972,36 +1096,6 @@
         }
     </script>
 
-    <!--
-    manifest.webmanifest (unchanged, if you veux le PWA offline):
-
-    {
-      "name": "Feel Strings",
-      "short_name": "FeelStrings",
-      "display": "standalone",
-      "start_url": "./index.html",
-      "background_color": "#050608",
-      "theme_color": "#111111",
-      "icons": []
-    }
-
-    Simple service-worker.js:
-
-    const CACHE_NAME = "emo-chords-v2";
-    const ASSETS = ["./", "./index.html"];
-
-    self.addEventListener("install", event => {
-      event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-      );
-    });
-
-    self.addEventListener("fetch", event => {
-      event.respondWith(
-        caches.match(event.request).then(resp => resp || fetch(event.request))
-      );
-    });
-  -->
 </body>
 
 </html>
