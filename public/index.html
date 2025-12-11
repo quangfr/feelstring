@@ -33,16 +33,17 @@
             display: flex;
             align-items: stretch;
             justify-content: center;
+            font-size: 0.92rem;
         }
 
         .app {
             width: 100%;
             max-width: 480px;
             margin: 0 auto;
-            padding: 16px 16px 24px;
+            padding: 8px 8px 12px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 0;
         }
 
         header {
@@ -53,13 +54,13 @@
         }
 
         header h1 {
-            font-size: 1.25rem;
+            font-size: 1rem;
             margin: 0;
             letter-spacing: 0.03em;
         }
 
         header small {
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             color: var(--muted);
         }
 
@@ -75,35 +76,42 @@
         .emotions {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .emotion-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
         }
 
         .emotion-btn {
             border: none;
             outline: none;
             border-radius: var(--radius);
-            padding: 12px 8px;
+            padding: 8px 4px;
             background: rgba(255, 255, 255, 0.03);
             color: var(--text);
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 1px;
             text-align: center;
             cursor: pointer;
             transition: transform 0.09s ease, background 0.12s ease, box-shadow 0.12s ease;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             -webkit-tap-highlight-color: transparent;
         }
 
         .emotion-btn span.emoji {
-            font-size: 1.4rem;
+            font-size: 1rem;
         }
 
         .emotion-btn span.label {
             opacity: 0.9;
+            font-size: 0.7rem;
         }
 
         .emotion-btn.active {
@@ -119,13 +127,13 @@
 
         .panel {
             background: rgba(5, 6, 12, 0.9);
-            border-radius: 20px;
-            padding: 14px 14px 16px;
+            border-radius: 18px;
+            padding: 6px 6px 6px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.65);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0;
         }
 
         .panel-header {
@@ -142,25 +150,25 @@
         }
 
         .panel-title {
-            font-size: 0.9rem;
+            font-size: 0.7rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--muted);
         }
 
         .panel-current {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
         }
 
         .panel-sub {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--muted);
         }
 
         .progression {
             margin-top: 4px;
-            padding: 10px 10px 8px;
+            padding: 8px 8px 6px;
             border-radius: 14px;
             background: radial-gradient(circle at top left, rgba(255, 179, 71, 0.12), rgba(255, 255, 255, 0.02));
             display: flex;
@@ -173,16 +181,73 @@
             padding: 4px 10px;
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(6px);
+        }
+
+        .style-picker {
+            margin-top: 8px;
+            padding: 6px 8px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .style-picker__label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .style-picker__label {
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .style-picker__helper {
+            font-size: 0.65rem;
+            color: var(--muted);
+        }
+
+        .style-picker__options {
+            display: flex;
+            gap: 0;
+        }
+
+        .style-btn {
+            flex: 1;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: transparent;
+            color: var(--text);
+            font-size: 0.7rem;
+            padding: 2px 5px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+        }
+
+        .style-btn.active {
+            background: rgba(255, 179, 71, 0.15);
+            border-color: rgba(255, 179, 71, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .style-btn:active {
+            transform: translateY(1px);
         }
 
         button.round {
             border-radius: 999px;
             border: none;
-            padding: 8px 14px;
-            font-size: 0.8rem;
+            padding: 4px 10px;
+            font-size: 0.75rem;
             background: var(--accent);
             color: #201b0d;
             font-weight: 600;
@@ -197,12 +262,6 @@
         button.round:active {
             transform: translateY(1px) scale(0.97);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
-        }
-
-        .hint {
-            font-size: 0.7rem;
-            color: var(--muted);
-            margin-top: 2px;
         }
 
         .install-banner {
@@ -258,13 +317,13 @@
         }
 
         .play-meta {
-            margin-top: 8px;
-            padding-top: 6px;
+            margin-top: 4px;
+            padding-top: 2px;
             border-top: 1px dashed rgba(255, 255, 255, 0.15);
             display: flex;
             flex-direction: column;
             gap: 4px;
-            font-size: 0.75rem;
+            font-size: 0.68rem;
         }
 
         .meta-row {
@@ -276,14 +335,19 @@
         .meta-label {
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             color: var(--muted);
-            min-width: 70px;
+            min-width: 60px;
         }
 
         .meta-value {
             flex: 1;
             color: var(--text);
+        }
+
+        #metaName {
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         .meta-small {
@@ -303,7 +367,7 @@
             <div class="pill">v2025.12.11.1</div>
         </header>
 
-        <section>
+        <section class="emotion-section">
             <div class="emotions" id="emotions">
                 <button class="emotion-btn" data-emotion="happy">
                     <span class="emoji">😊</span>
@@ -330,6 +394,16 @@
                     <span class="label">Loved</span>
                 </button>
             </div>
+            <div class="style-picker">
+                <div class="style-picker__label-row">
+                    <span class="style-picker__label">Guitar styles</span>
+                </div>
+                <div class="style-picker__options">
+                    <button type="button" class="style-btn active" data-style="rock">Rock 🎸</button>
+                    <button type="button" class="style-btn active" data-style="jazz">Jazz 🎷</button>
+                    <button type="button" class="style-btn active" data-style="blues">Blues 🎺</button>
+                </div>
+            </div>
         </section>
 
         <section class="panel">
@@ -345,18 +419,21 @@
             </div>
 
             <div class="progression" id="progression"></div>
-
             <div class="play-meta">
                 <div class="meta-row">
                     <span class="meta-label">Name</span>
                     <span class="meta-value" id="metaName">—</span>
                 </div>
                 <div class="meta-row">
+                    <span class="meta-label">Style</span>
+                    <span class="meta-value meta-small" id="metaStyle">—</span>
+                </div>
+                <div class="meta-row">
                     <span class="meta-label">Strum</span>
                     <span class="meta-value" id="metaPattern">—</span>
                 </div>
                 <div class="meta-row">
-                    <span class="meta-label">Style</span>
+                    <span class="meta-label">Technique</span>
                     <span class="meta-value" id="metaTechnique">—</span>
                 </div>
                 <div class="meta-row">
@@ -365,9 +442,6 @@
                 </div>
             </div>
 
-            <div class="hint">
-                Best with headphones · triangle synth, use this as a practice companion.
-            </div>
         </section>
     </div>
 
@@ -427,476 +501,459 @@
 
         // ---------- Emotions & 10 progressions each ----------
         // strum pattern legend examples: D = down, U = up, x = muted, H = hammer-on, P = pull-off
-        const emotions = {
-            happy: {
-                label: "Happy",
-                emoji: "😊",
-                description: "Bright, open pop progressions in C / G.",
-                progressions: [
-                    {
-                        name: "Pop Classic I–V–vi–IV",
-                        chords: ["C", "G", "Am", "F"],
-                        pattern: "D  D  U U D U",
-                        technique: "Loose wrist, light accent on 2 & 4.",
-                        extra: "Think pop / worship vibe, let chords ring."
-                    },
-                    {
-                        name: "Sunrise Maj7",
-                        chords: ["Cmaj7", "G", "Am7", "Fmaj7"],
-                        pattern: "D  (D U) (D U) U",
-                        technique: "Soft dynamic, focus on clarity.",
-                        extra: "Brush the top 3–4 strings, very gentle."
-                    },
-                    {
-                        name: "Happy Shuffle",
-                        chords: ["C", "F", "G", "C"],
-                        pattern: "D  D U  D U",
-                        technique: "Shuffle feel: long-short, long-short.",
-                        extra: "Tap your foot, accent the first D of each beat."
-                    },
-                    {
-                        name: "Add9 Smile",
-                        chords: ["Cadd9", "G", "Am7", "Fmaj7"],
-                        pattern: "D  xU  D U D U",
-                        technique: "Palm mute on x, release for U.",
-                        extra: "Light palm mute near bridge, more open on choruses."
-                    },
-                    {
-                        name: "Csus Lift",
-                        chords: ["Csus2", "C", "Cmaj7", "Fmaj7"],
-                        pattern: "D D U U D U",
-                        technique: "Play small arpeggio on last U.",
-                        extra: "Move from sus2 → C → maj7 smoothly, no full stop."
-                    },
-                    {
-                        name: "G Pop Drive",
-                        chords: ["G", "D", "Em", "C"],
-                        pattern: "D D U  U D U",
-                        technique: "Strum from low to high on strong beats.",
-                        extra: "Build energy by increasing volume each bar."
-                    },
-                    {
-                        name: "Happy Folk",
-                        chords: ["C", "F", "C", "G"],
-                        pattern: "D U D U D U",
-                        technique: "Even 8th-note feel, relaxed.",
-                        extra: "Alternate bass: hit root note slightly stronger."
-                    },
-                    {
-                        name: "Open Sky",
-                        chords: ["G", "Em", "C", "D"],
-                        pattern: "D  D U  U D",
-                        technique: "Accents on the first D of each bar.",
-                        extra: "Let D ring longer to feel the resolution."
-                    },
-                    {
-                        name: "Sus Celebration",
-                        chords: ["G", "Gsus4", "G", "C"],
-                        pattern: "D H D U  D U",
-                        technique: "Hammer-on from sus4 to major (H on 2nd beat).",
-                        extra: "Really hear the tension–release Gsus4 → G."
-                    },
-                    {
-                        name: "Bright Cadence",
-                        chords: ["F", "G", "C", "Cmaj7"],
-                        pattern: "D  (D U)  U D",
-                        technique: "Roll the wrist, small dynamics swell.",
-                        extra: "Final Cmaj7: arpeggiate slowly instead of full strum."
-                    }
-                ]
+        const guitarStyles = {
+            rock: {
+                emoji: "🎸",
+                label: "Rock",
+                summary: "Aggressive, chunky downstrokes with tight chokes.",
+                patternSuffix: "(Rock swing: add extra downstroke punch).",
+                techniqueNote: "Lean into palm-mutes and heavy downstrokes near the bridge.",
+                extraNote: "End each turn with a muted chop for extra bite."
             },
-
-            sad: {
-                label: "Sad",
-                emoji: "😢",
-                description: "Minor progressions, soft dynamics.",
-                progressions: [
-                    {
-                        name: "vi–IV–I–V Ballad",
-                        chords: ["Am", "F", "C", "G"],
-                        pattern: "D   D U   U D U",
-                        technique: "Soft, close to the strings.",
-                        extra: "Let the bass note ring slightly longer than the rest."
-                    },
-                    {
-                        name: "Minor Arpeggio",
-                        chords: ["Am7", "Fmaj7", "C", "G"],
-                        pattern: "D (arpeggio): D U D U",
-                        technique: "Arpeggiate: thumb on bass, index/middle on upper strings.",
-                        extra: "Arpeggio especially on Am7 and Fmaj7 for color."
-                    },
-                    {
-                        name: "Falling Line",
-                        chords: ["C", "G/B", "Am", "Em"], // G/B conceptual only
-                        pattern: "D  D U   U D U",
-                        technique: "Gentle, with one accent per bar on the first D.",
-                        extra: "Imagine bass line falling C → B → A → E."
-                    },
-                    {
-                        name: "Suspended Tears",
-                        chords: ["Csus2", "Csus4", "C", "Am7"],
-                        pattern: "D H D U  D U",
-                        technique: "Hammer-on inside C shapes on higher strings.",
-                        extra: "Use H on 3rd beat to move from sus to main chord."
-                    },
-                    {
-                        name: "Minor Walk",
-                        chords: ["Am", "G", "F", "Em"],
-                        pattern: "D  xU  D U D U",
-                        technique: "x = muted hit with left-hand lift.",
-                        extra: "Mute on x by lightly releasing fretting pressure."
-                    },
-                    {
-                        name: "Dm7 Lullaby",
-                        chords: ["Dm7", "G", "C", "Cmaj7"],
-                        pattern: "D  D U  U D",
-                        technique: "Very quiet, play more with fingertips than nail.",
-                        extra: "Let Cmaj7 ring to end the phrase, no strum on last beat."
-                    },
-                    {
-                        name: "Reverse Resolution",
-                        chords: ["Em", "Cmaj7", "G", "D"],
-                        pattern: "D  D U   (rest) U",
-                        technique: "Leave small gaps after strong beats.",
-                        extra: "Tiny pauses increase the “sighing” feeling."
-                    },
-                    {
-                        name: "Broken Heart",
-                        chords: ["Am", "Em", "F", "Dm"],
-                        pattern: "D U D   U D U",
-                        technique: "Slight crescendo on each bar.",
-                        extra: "Lean more into the F and Dm chords emotionally."
-                    },
-                    {
-                        name: "Descending Maj7",
-                        chords: ["Cmaj7", "Bm7b5", "Am7", "G"],
-                        pattern: "D  (D U)  U U",
-                        technique: "Smooth arpeggio-like strums.",
-                        extra: "Target the top 3 strings on maj7 for clarity."
-                    },
-                    {
-                        name: "Soft Echo",
-                        chords: ["Em7", "Cadd9", "G", "D"],
-                        pattern: "D   D (U)   D U",
-                        technique: "Ghost the (U): almost silent.",
-                        extra: "Play (U) as a ghost stroke to keep your hand moving."
-                    }
-                ]
+            jazz: {
+                emoji: "🎷",
+                label: "Jazz",
+                summary: "Laid-back swing, syncopated accents, and inner-voice focus.",
+                patternSuffix: "(Jazz sway: syncopated upstrokes and light swings).",
+                techniqueNote: "Keep fingers close to the strings and emphasise inner voices.",
+                extraNote: "Add subtle ghost notes between chords to keep the pocket breathing."
             },
-
-            inspired: {
-                label: "Inspired",
-                emoji: "✨",
-                description: "Maj7, add9 and open chords for an uplifting feel.",
-                progressions: [
-                    {
-                        name: "I–IV–V–I Anthem",
-                        chords: ["C", "F", "G", "C"],
-                        pattern: "D D U  U D U",
-                        technique: "Wide, confident strums.",
-                        extra: "Let the last C ring; think “anthem” chorus."
-                    },
-                    {
-                        name: "Maj7 Dream",
-                        chords: ["Cmaj7", "Fmaj7", "G", "Cmaj7"],
-                        pattern: "D  (D U)  (D U)",
-                        technique: "Arpeggiated D, then light strokes.",
-                        extra: "Use slow D on beat 1, then gentle waves."
-                    },
-                    {
-                        name: "Add9 Spark",
-                        chords: ["Cadd9", "G", "Am7", "Dsus4"],
-                        pattern: "D H U  D U",
-                        technique: "Hammer-on (H) in the sus chord.",
-                        extra: "Release Dsus4 → D on last U for brightness."
-                    },
-                    {
-                        name: "Ascending Light",
-                        chords: ["Am7", "C", "Fmaj7", "G"],
-                        pattern: "D  D U  U U",
-                        technique: "Crescendo through the bar.",
-                        extra: "Play G slightly louder to lift into next phrase."
-                    },
-                    {
-                        name: "Epic Build",
-                        chords: ["Em", "C", "G", "D"],
-                        pattern: "D D U D U D",
-                        technique: "Steady driving 8ths.",
-                        extra: "Keep right hand moving constant, like a motor."
-                    },
-                    {
-                        name: "Suspended Hope",
-                        chords: ["G", "Gsus4", "G", "Cadd9"],
-                        pattern: "D H D U D U",
-                        technique: "H on sus4 then snap into G.",
-                        extra: "Let Cadd9 be more delicate to reset the phrase."
-                    },
-                    {
-                        name: "Open Road",
-                        chords: ["D", "G", "A", "D"],
-                        pattern: "D D U U D U",
-                        technique: "Strums from low to high then high to low.",
-                        extra: "Think “road trip” groove, medium tempo."
-                    },
-                    {
-                        name: "Lift Off",
-                        chords: ["Em7", "Cmaj7", "G", "D"],
-                        pattern: "D  U D U  D U",
-                        technique: "Alternate emphasis high / low strings.",
-                        extra: "Emphasise treble on Em7 & Cmaj7, bass on G & D."
-                    },
-                    {
-                        name: "Bright Pulse",
-                        chords: ["C", "G", "Am", "Fmaj7"],
-                        pattern: "D   D U  xU D",
-                        technique: "Muted x before last D.",
-                        extra: "x = small percussive hit with left-hand lift."
-                    },
-                    {
-                        name: "Sparkle Arp",
-                        chords: ["Cmaj7", "G", "Am7", "F"],
-                        pattern: "D (arp) D (arp)",
-                        technique: "Play D as broken chord (bass → middle → high).",
-                        extra: "Use a bit more nail on top notes to make them sparkle."
-                    }
-                ]
-            },
-
-            anger: {
-                label: "Anger",
-                emoji: "😡",
-                description: "Power-chord-like shapes, muted hits, tense moves.",
-                progressions: [
-                    {
-                        name: "Em Drive",
-                        chords: ["Em", "F", "G", "F"],
-                        pattern: "D xD xD xD",
-                        technique: "Heavy downstrokes, strong palm mute.",
-                        extra: "xD = muted downstroke, keep right hand tight near bridge."
-                    },
-                    {
-                        name: "Power Push",
-                        chords: ["E5", "G5", "A5", "G5"],
-                        pattern: "D D D  xD",
-                        technique: "All down, aggressive.",
-                        extra: "Accentuate the first D of each chord change."
-                    },
-                    {
-                        name: "Broken Rage",
-                        chords: ["Em", "G", "Bdim", "Em"],
-                        pattern: "D xU D xU",
-                        technique: "Mute every x with left-hand lift.",
-                        extra: "Bdim is short, almost like a stab."
-                    },
-                    {
-                        name: "Stomp",
-                        chords: ["Am", "G", "F", "E"],
-                        pattern: "D D xD xD",
-                        technique: "Alternate loud / muted hits.",
-                        extra: "Tap foot hard on first D to externalise tension."
-                    },
-                    {
-                        name: "Suspense",
-                        chords: ["Em", "Gsus4", "G", "F"],
-                        pattern: "D H D xD",
-                        technique: "Hammer-on Gsus4 → G, then heavy F.",
-                        extra: "Let F ring slightly longer; it feels unresolved."
-                    },
-                    {
-                        name: "Grinding",
-                        chords: ["E5", "E5", "G5", "A5"],
-                        pattern: "D D D D",
-                        technique: "Continuous strong downstrokes.",
-                        extra: "No dynamics, machine-like feel."
-                    },
-                    {
-                        name: "Release",
-                        chords: ["Em7", "D", "C", "Bdim"],
-                        pattern: "D xU D xU",
-                        technique: "Muted off-beats, sharp attacks.",
-                        extra: "Short Bdim, then back to Em7 when looping."
-                    },
-                    {
-                        name: "Pulse Attack",
-                        chords: ["Em", "Em", "G", "G"],
-                        pattern: "D xD D xD",
-                        technique: "Palm mutes on x, full strum on non-x.",
-                        extra: "Try accenting only beats 1 and 3."
-                    },
-                    {
-                        name: "Sharp Cuts",
-                        chords: ["Am", "F", "G", "E7"],
-                        pattern: "D (choke) D (choke)",
-                        technique: "Choke = instant mute after D.",
-                        extra: "Choke by resting right hand across strings."
-                    },
-                    {
-                        name: "Raw March",
-                        chords: ["Em", "D", "C", "D"],
-                        pattern: "D D D D",
-                        technique: "Rigid, almost percussive.",
-                        extra: "No swing; strict, stiff rhythm for intensity."
-                    }
-                ]
-            },
-
-            ashamed: {
-                label: "Ashamed",
-                emoji: "🙈",
-                description: "Tension–resolution, dim and minor7 colours.",
-                progressions: [
-                    {
-                        name: "ii–V–I–vi",
-                        chords: ["Dm7", "G7", "Cmaj7", "Am7"],
-                        pattern: "D  (D U)  U D",
-                        technique: "Quiet, introspective dynamics.",
-                        extra: "Lean into Dm7 and G7 as “question”, Cmaj7 as “answer”."
-                    },
-                    {
-                        name: "Hesitation",
-                        chords: ["Csus2", "C", "Am7", "Fmaj7"],
-                        pattern: "D H D U  U",
-                        technique: "Hammer-on inside Csus2 → C.",
-                        extra: "Let Fmaj7 ring longer, almost like a sigh."
-                    },
-                    {
-                        name: "Dim Step",
-                        chords: ["C", "Bdim", "Am", "G"],
-                        pattern: "D  (rest) D U",
-                        technique: "Short Bdim with small accent.",
-                        extra: "Bdim is the awkward step before falling to Am."
-                    },
-                    {
-                        name: "Hidden Guilt",
-                        chords: ["Em", "Cmaj7", "D", "G"],
-                        pattern: "D U D   (x) U",
-                        technique: "Ghost stroke on (x).",
-                        extra: "Ghost stroke keeps hand moving but almost inaudible."
-                    },
-                    {
-                        name: "Whispered",
-                        chords: ["Am", "Fmaj7", "Dm7", "G"],
-                        pattern: "D (arp)  U U",
-                        technique: "Arpeggio Am and Fmaj7 softly.",
-                        extra: "Play Dm7 and G slightly louder than the rest."
-                    },
-                    {
-                        name: "Downcast",
-                        chords: ["Am7", "C", "G", "F"],
-                        pattern: "D D U  U D",
-                        technique: "Let high strings be softer than bass.",
-                        extra: "Keep tempo slow, don’t rush the changes."
-                    },
-                    {
-                        name: "Avoidance",
-                        chords: ["C", "F", "G7", "Cmaj7"],
-                        pattern: "D   D U  xU D",
-                        technique: "Muted x before resolving.",
-                        extra: "G7 holds the tension; Cmaj7 softens the landing."
-                    },
-                    {
-                        name: "Shy Steps",
-                        chords: ["Dm", "Em", "F", "G"],
-                        pattern: "D (short) D (short)",
-                        technique: "Short, hesitant strokes.",
-                        extra: "Make each bar slightly quieter than the previous."
-                    },
-                    {
-                        name: "Maj7 Confession",
-                        chords: ["Cmaj7", "Am7", "Fmaj7", "G"],
-                        pattern: "D U D   U U",
-                        technique: "Emphasise inner voices over bass.",
-                        extra: "Imagine the lines between chords instead of the chords themselves."
-                    },
-                    {
-                        name: "Soft Fall",
-                        chords: ["Em7", "Dm7", "Cmaj7", "Am7"],
-                        pattern: "D  D U  U",
-                        technique: "Slow, rounded motion.",
-                        extra: "Let each chord ring almost into the next one."
-                    }
-                ]
-            },
-
-            loved: {
-                label: "Loved",
-                emoji: "❤️",
-                description: "Warm, gentle, lots of maj7 and 7th chords.",
-                progressions: [
-                    {
-                        name: "I–vi–IV–V",
-                        chords: ["C", "Am", "F", "G"],
-                        pattern: "D D U  U D U",
-                        technique: "Soft, regular heartbeat feel.",
-                        extra: "Accent beats 2 and 4 slightly for a sway."
-                    },
-                    {
-                        name: "Warm Maj7",
-                        chords: ["Cmaj7", "Am7", "Fmaj7", "G"],
-                        pattern: "D (arp) D U",
-                        technique: "Slow arpeggio on every first D.",
-                        extra: "Let maj7 chords ring, minimal palm mute."
-                    },
-                    {
-                        name: "Romantic",
-                        chords: ["C", "G/B", "Am7", "Fmaj7"],
-                        pattern: "D  D U  U",
-                        technique: "Gentle fingerstyle-like strums.",
-                        extra: "Imagine a slow dance tempo, around 70–80 bpm."
-                    },
-                    {
-                        name: "Heartbeat",
-                        chords: ["Am7", "F", "C", "G"],
-                        pattern: "D   (xD)   D U",
-                        technique: "xD as small heartbeat mute.",
-                        extra: "xD = very short muted hit between chords."
-                    },
-                    {
-                        name: "Soft Swing",
-                        chords: ["Cadd9", "G", "Em7", "D"],
-                        pattern: "D D U  U D",
-                        technique: "Swing the 8ths (long-short).",
-                        extra: "Emphasise the “up” into each change."
-                    },
-                    {
-                        name: "Sus Hug",
-                        chords: ["G", "Dsus4", "D", "Cadd9"],
-                        pattern: "D H D U D",
-                        technique: "Hammer-on Dsus4 → D on beat 2.",
-                        extra: "Make Cadd9 the softest strum of the cycle."
-                    },
-                    {
-                        name: "Tender Walk",
-                        chords: ["Fmaj7", "G", "Em7", "Am7"],
-                        pattern: "D  D U   U U",
-                        technique: "Smooth progression, no brutal accents.",
-                        extra: "Fmaj7 to G is the “step closer” moment."
-                    },
-                    {
-                        name: "Evening Light",
-                        chords: ["Dm7", "G7", "Cmaj7", "Cmaj7"],
-                        pattern: "D U D   U",
-                        technique: "Very slow, let notes breathe.",
-                        extra: "On last Cmaj7, play an arpeggio instead of full strum."
-                    },
-                    {
-                        name: "Open Arms",
-                        chords: ["C", "F", "G", "Am7"],
-                        pattern: "D D U  xU D",
-                        technique: "Muted x for small breath before resolution.",
-                        extra: "Aim to land on Am7 like a soft landing."
-                    },
-                    {
-                        name: "Gentle Waltz",
-                        chords: ["Cmaj7", "Fmaj7", "G", "C"],
-                        pattern: "D   D   D U",
-                        technique: "1-2-3 waltz: strong–soft–soft.",
-                        extra: "Count 1-2-3, 1-2-3 and sway with the rhythm."
-                    }
-                ]
+            blues: {
+                emoji: "🎺",
+                label: "Blues",
+                summary: "Shuffle-driven, call-and-response phrasing with spacey bends.",
+                patternSuffix: "(Blues shuffle: long-short, long-short feel).",
+                techniqueNote: "Let the wrist sway, accent beats 2 and 4, and add slinky rubs.",
+                extraNote: "Let the 3rd and 7th linger and finish phrases with a soft percussive hit."
             }
         };
 
+        const stylePairData = [
+            {
+                emotions: ["happy", "inspired"],
+                rock: {
+                    name: "Power Pop Pulse",
+                    chords: ["C", "G", "Am", "F"],
+                    pattern: "D D U U D U",
+                    technique: "Drive the downbeats, keep the wrist tight for punch.",
+                    extra: "Let each chord ring, then finish with a muted lift on beat 4."
+                },
+                jazz: {
+                    name: "Daylight Bloom",
+                    chords: ["Cmaj7", "G7", "Am7", "Fmaj7"],
+                    pattern: "D (D U) (D U)",
+                    technique: "Play with thumbed bass and airy comping.",
+                    extra: "Let the top strings float, emphasising the inner voices."
+                },
+                blues: {
+                    name: "Shine Delta",
+                    chords: ["C", "G7", "Am7", "F"],
+                    pattern: "D U D U D U",
+                    technique: "Thumb the low strings and brush the highs softly.",
+                    extra: "Stack short walk-ups between chords for a warm shuffle."
+                }
+            },
+            {
+                emotions: ["happy", "loved"],
+                rock: {
+                    name: "Sunset Anthem",
+                    chords: ["G", "D", "Em", "C"],
+                    pattern: "D D U xD D",
+                    technique: "Chunky downstrokes with bright, ringing tops.",
+                    extra: "End each bar with a quick muted chop to keep energy."
+                },
+                jazz: {
+                    name: "Velvet Circuit",
+                    chords: ["C", "G/B", "Am7", "Fmaj7"],
+                    pattern: "D U D U",
+                    technique: "Roll from bass to treble for soft comping.",
+                    extra: "Add ghost notes on the weak beats to keep your hand moving."
+                },
+                blues: {
+                    name: "Honey Swell",
+                    chords: ["F", "C", "G7", "C"],
+                    pattern: "D D U U D U",
+                    technique: "Lay into the shuffle with low-thumb grooves.",
+                    extra: "Slide into the G7 to highlight the call-and-response."
+                }
+            },
+            {
+                emotions: ["happy", "anger"],
+                rock: {
+                    name: "Crash Rally",
+                    chords: ["E5", "G5", "A5", "G5"],
+                    pattern: "D D D D",
+                    technique: "All downstrokes with tight palm muting.",
+                    extra: "Let each chord chug, then release a split second after the hit."
+                },
+                jazz: {
+                    name: "Brass Sparks",
+                    chords: ["Em7", "A7", "Dm7", "G7"],
+                    pattern: "D D U D U",
+                    technique: "Accent the A7 on beat two with snapped attack.",
+                    extra: "Let the Em7 breathe before sliding into the Dm7."
+                },
+                blues: {
+                    name: "Rusty Anthem",
+                    chords: ["E7", "G7", "A7", "G7"],
+                    pattern: "D D D D",
+                    technique: "Steady shuffle with aggressive thumb-driving bass.",
+                    extra: "Queue up the A7 with a punchy accent before returning to G7."
+                }
+            },
+            {
+                emotions: ["happy", "sad"],
+                rock: {
+                    name: "Helix Lift",
+                    chords: ["Am", "F", "C", "G"],
+                    pattern: "D D U U D U",
+                    technique: "Let the treble strings ring while keeping bass anchored.",
+                    extra: "Sustain the final G to create a bittersweet feel."
+                },
+                jazz: {
+                    name: "Glass Garden",
+                    chords: ["Am7", "D7", "G", "Cmaj7"],
+                    pattern: "D (D U) U D",
+                    technique: "Let the D7 sit slightly behind the beat.",
+                    extra: "Allow the Cmaj7 to bloom with a slow release."
+                },
+                blues: {
+                    name: "Tears in Satin",
+                    chords: ["Cadd9", "G", "Am7", "Fmaj7"],
+                    pattern: "D D U U D U",
+                    technique: "Brush the strings gently, intimate and open.",
+                    extra: "Play a soft hammer-on on the G chord to let it cry."
+                }
+            },
+            {
+                emotions: ["happy", "ashamed"],
+                rock: {
+                    name: "Glass Horizon",
+                    chords: ["Cadd9", "G", "Em", "D"],
+                    pattern: "D U D U D U",
+                    technique: "Open strums with relaxed palm cushioning.",
+                    extra: "Insert a small hook of open strings between each bar."
+                },
+                jazz: {
+                    name: "Quiet Resolve",
+                    chords: ["Dm7", "G7", "Cmaj7", "Bbmaj7"],
+                    pattern: "D U D U",
+                    technique: "Keep the touch gentle and even-paced.",
+                    extra: "Let the Bbmaj7 ring as a soft sigh before resolving."
+                },
+                blues: {
+                    name: "Borrowed Smile",
+                    chords: ["C", "G/B", "Am7", "Fmaj7"],
+                    pattern: "D D U xU D",
+                    technique: "Swing each bar with a breathing shuffle.",
+                    extra: "Let G/B lead gracefully back into the Fmaj7 landing."
+                }
+            },
+            {
+                emotions: ["inspired", "loved"],
+                rock: {
+                    name: "Neon Bloom",
+                    chords: ["Cmaj7", "Fmaj7", "G", "Em7"],
+                    pattern: "D (D U) (D U)",
+                    technique: "Start with tall, open strums then settle into the groove.",
+                    extra: "Blend the Em7 into the loop for a warm landing."
+                },
+                jazz: {
+                    name: "Luminous Waltz",
+                    chords: ["Fmaj7", "G7", "Em7", "Am7"],
+                    pattern: "D D U  U D",
+                    technique: "Treat the bar like a three-beat sway.",
+                    extra: "Walk the bass lightly between chords for shimmer."
+                },
+                blues: {
+                    name: "Evening Train",
+                    chords: ["D7", "G", "C", "Am7"],
+                    pattern: "D D U D",
+                    technique: "Punch the D7, then brush across high strings.",
+                    extra: "Let the G stretch before dropping into C for the ride."
+                }
+            },
+            {
+                emotions: ["inspired", "anger"],
+                rock: {
+                    name: "Voltage Push",
+                    chords: ["Em", "Cmaj7", "G", "D"],
+                    pattern: "D xD D xD",
+                    technique: "Staccato hits with aggressive palm damping.",
+                    extra: "Cut chords tight right after each strike."
+                },
+                jazz: {
+                    name: "Circuit Turning",
+                    chords: ["Em7", "Cmaj7", "Am7", "D7"],
+                    pattern: "D U D U",
+                    technique: "Keep fingers close to strings for quick voicing changes.",
+                    extra: "Let the D7 drop in with a slight syncopation."
+                },
+                blues: {
+                    name: "Steel Swamp",
+                    chords: ["E7", "E7", "G7", "A7"],
+                    pattern: "D D D D",
+                    technique: "Heavily swung downstrokes with thumb anchor.",
+                    extra: "Throw in a sly hammer-on before landing on A7."
+                }
+            },
+            {
+                emotions: ["inspired", "sad"],
+                rock: {
+                    name: "Lone Beacon",
+                    chords: ["Am7", "Dm7", "G", "C"],
+                    pattern: "D U D U",
+                    technique: "Let the higher strings breathe while bass stays grounded.",
+                    extra: "Shift dynamics slowly to keep the story moving."
+                },
+                jazz: {
+                    name: "Blue Lantern",
+                    chords: ["Am7", "Dm7", "G7", "Cmaj7"],
+                    pattern: "D (D U) U U",
+                    technique: "Use thumb-led bass and floating top strings.",
+                    extra: "Lean on the G7 as the pivot before resolving to Cmaj7."
+                },
+                blues: {
+                    name: "Amber Drift",
+                    chords: ["Am7", "Em7", "Fmaj7", "G7"],
+                    pattern: "D D U  U D",
+                    technique: "Let the bass hum while the treble dances.",
+                    extra: "Add a soft pull-off between the Fmaj7 and G7."
+                }
+            },
+            {
+                emotions: ["inspired", "ashamed"],
+                rock: {
+                    name: "Fading Triumph",
+                    chords: ["Dm7", "G7", "Cmaj7", "Cmaj7"],
+                    pattern: "D D U U",
+                    technique: "Keep the attack deliberate and unwavering.",
+                    extra: "Allow the final Cmaj7 to drift longer than usual."
+                },
+                jazz: {
+                    name: "Soft Inquiry",
+                    chords: ["Bbmaj7", "Am7", "D7", "G7"],
+                    pattern: "D U D  U",
+                    technique: "Feather each stroke, staying light on the fretboard.",
+                    extra: "Treat the Bbmaj7 as a warm, questioning hug."
+                },
+                blues: {
+                    name: "Lowlight Linger",
+                    chords: ["Dm7", "G7", "Cadd9", "Fmaj7"],
+                    pattern: "D U D U",
+                    technique: "Accent the backbeat while keeping muted plucks in-between.",
+                    extra: "Let Cadd9 sit longer to stretch the melancholy."
+                }
+            },
+            {
+                emotions: ["loved", "anger"],
+                rock: {
+                    name: "Velvet Riot",
+                    chords: ["Am", "G", "F", "E"],
+                    pattern: "D D xD xD",
+                    technique: "Alternate between loud and muted hits for tension.",
+                    extra: "Finish on E with a quick choke to keep it raw."
+                },
+                jazz: {
+                    name: "Crimson Lure",
+                    chords: ["Cmaj7", "Bbmaj7", "Fmaj7", "G7"],
+                    pattern: "D (D U) D U",
+                    technique: "Let the G7 shine with slightly bigger attack.",
+                    extra: "Bbmaj7 adds the tension before the calm release."
+                },
+                blues: {
+                    name: "Love on Fire",
+                    chords: ["Am", "F", "G", "E7"],
+                    pattern: "D D U D",
+                    technique: "Thumb-heavy bass with tight treble snaps.",
+                    extra: "E7 should hang with a slight feedback-like sustain."
+                }
+            },
+            {
+                emotions: ["loved", "sad"],
+                rock: {
+                    name: "Tender Cut",
+                    chords: ["C", "G/B", "Am7", "Fmaj7"],
+                    pattern: "D D U xU D",
+                    technique: "Trace each chord slowly from the bass up.",
+                    extra: "G/B gives a sweet lift before sinking to Fmaj7."
+                },
+                jazz: {
+                    name: "Silk Retreat",
+                    chords: ["Fmaj7", "Em7", "Am7", "G7"],
+                    pattern: "D U D   U U",
+                    technique: "Keep the top strings sweet and mellow.",
+                    extra: "Em7 to Am7 is the heartbeat of this line."
+                },
+                blues: {
+                    name: "Tender Cry",
+                    chords: ["Cmaj7", "Fmaj7", "G7", "C"],
+                    pattern: "D D U U",
+                    technique: "Arpeggiate the Cmaj7 for a lullaby feel.",
+                    extra: "Drop back to C with a soft thumb to finish."
+                }
+            },
+            {
+                emotions: ["loved", "ashamed"],
+                rock: {
+                    name: "Glow Aftermath",
+                    chords: ["Fmaj7", "G", "Em7", "Am7"],
+                    pattern: "D (arp) D U",
+                    technique: "Start each bar with an arpeggio then strum.",
+                    extra: "Pause before hitting Em7 to let the voices settle."
+                },
+                jazz: {
+                    name: "Moonlit Couplet",
+                    chords: ["Dm7", "G7", "Cmaj7", "Am7"],
+                    pattern: "D D U U",
+                    technique: "Dial in a gentle backbeat with touches of chromatic passing notes.",
+                    extra: "Cmaj7 opens and the Am7 closes like verses."
+                },
+                blues: {
+                    name: "Green Lantern",
+                    chords: ["Fmaj7", "G7", "Em7", "Am7"],
+                    pattern: "D U D U",
+                    technique: "Slide smoothly into each chord with a light two-finger hook.",
+                    extra: "Keep the G7 slightly damped for a smoky finish."
+                }
+            },
+            {
+                emotions: ["anger", "sad"],
+                rock: {
+                    name: "Steel March",
+                    chords: ["Em", "D", "C", "D"],
+                    pattern: "D D xD xD",
+                    technique: "Palm-mute for a marching pulse with occasional ring-outs.",
+                    extra: "Open the last D to let it breathe before looping."
+                },
+                jazz: {
+                    name: "Tension Glide",
+                    chords: ["G7", "Fmaj7", "Em7", "D7"],
+                    pattern: "D D U D U",
+                    technique: "Center the groove around the G7 top voice.",
+                    extra: "Drop right into the D7 for a sharp turn-around."
+                },
+                blues: {
+                    name: "Broken Train",
+                    chords: ["Em7", "D", "C", "D"],
+                    pattern: "D D U D",
+                    technique: "Let each chord slide toward the next for grit.",
+                    extra: "Pull the D down into C like slowing cars."
+                }
+            },
+            {
+                emotions: ["anger", "ashamed"],
+                rock: {
+                    name: "Tension Fold",
+                    chords: ["Am7", "C", "G", "F"],
+                    pattern: "D (choke) D (choke)",
+                    technique: "Choke after each throw to keep attack jittery.",
+                    extra: "Lean into the uncertainty of each muted hit."
+                },
+                jazz: {
+                    name: "Hushed Edges",
+                    chords: ["Am7", "Cmaj7", "Fmaj7", "G7"],
+                    pattern: "D U D U",
+                    technique: "Keep strokes brushed and light.",
+                    extra: "Let the G7 float before it snaps back into Am7."
+                },
+                blues: {
+                    name: "Smokestack Frown",
+                    chords: ["Am", "G", "F", "E7"],
+                    pattern: "D xD D xD",
+                    technique: "Mimic a train chug with alternate muted hits.",
+                    extra: "End each bar with the E7 ring-linger."
+                }
+            },
+            {
+                emotions: ["sad", "ashamed"],
+                rock: {
+                    name: "Last Ember",
+                    chords: ["Em7", "Dm7", "Cmaj7", "Am7"],
+                    pattern: "D U D U",
+                    technique: "Slow, airy strums that fade into the next chord.",
+                    extra: "Allow the chords to overlap lightly for warmth."
+                },
+                jazz: {
+                    name: "Faded Promise",
+                    chords: ["Dm7", "Em7", "Fmaj7", "G7"],
+                    pattern: "D U D U",
+                    technique: "Use soft thumb strokes with careful inner voices.",
+                    extra: "Drop the G7 a beat late to keep the yearning alive."
+                },
+                blues: {
+                    name: "Midnight Lull",
+                    chords: ["Em7", "Dm7", "Cmaj7", "Bdim"],
+                    pattern: "D (soft) D U",
+                    technique: "Keep things close-mic with gentle damped hits.",
+                    extra: "Let the Bdim be a quick, short stop before resolving."
+                }
+            }
+        ];
+
+        function buildStyleProgressions(styleKey) {
+            return stylePairData.map(pair => ({
+                ...pair[styleKey],
+                emotions: pair.emotions
+            }));
+        }
+
+        const styleProgressions = {
+            rock: buildStyleProgressions("rock"),
+            jazz: buildStyleProgressions("jazz"),
+            blues: buildStyleProgressions("blues")
+        };
+
+        const baseEmotions = {
+            happy: {
+                label: "Happy",
+                emoji: "😊",
+                description: "Bright, open pop progressions in C / G."
+            },
+            sad: {
+                label: "Sad",
+                emoji: "😢",
+                description: "Minor progressions, soft dynamics."
+            },
+            inspired: {
+                label: "Inspired",
+                emoji: "✨",
+                description: "Maj7, add9 and open chords for an uplifting feel."
+            },
+            anger: {
+                label: "Anger",
+                emoji: "😡",
+                description: "Power-chord-like shapes, muted hits, tense moves."
+            },
+            ashamed: {
+                label: "Ashamed",
+                emoji: "🙈",
+                description: "Tension–resolution, dim and minor7 colours."
+            },
+            loved: {
+                label: "Loved",
+                emoji: "❤️",
+                description: "Warm, gentle, lots of maj7 and 7th chords."
+            }
+        };
+
+        const emotions = Object.keys(baseEmotions).reduce((acc, key) => {
+            acc[key] = { ...baseEmotions[key], styles: {} };
+            return acc;
+        }, {});
+
+        Object.entries(styleProgressions).forEach(([styleKey, progressions]) => {
+            progressions.forEach(prog => {
+                prog.emotions.forEach(emotionKey => {
+                    const emo = emotions[emotionKey];
+                    if (!emo) return;
+                    if (!emo.styles[styleKey]) {
+                        emo.styles[styleKey] = { progressions: [] };
+                    }
+                    emo.styles[styleKey].progressions.push(prog);
+                });
+            });
+        });
         // ---------- Audio engine ----------
         let audioCtx = null;
 
@@ -955,33 +1012,50 @@
         const metaPatternEl = document.getElementById("metaPattern");
         const metaTechniqueEl = document.getElementById("metaTechnique");
         const metaExtraEl = document.getElementById("metaExtra");
+        const metaStyleEl = document.getElementById("metaStyle");
+        const styleButtons = document.querySelectorAll(".style-btn");
 
         let currentEmotionKey = null;
         let currentProgIndex = null;
+        let currentProgressionStyleKey = null;
+        const activeStyleKeys = new Set(Object.keys(guitarStyles));
+
+        function safeMetaValue(value) {
+            return value && value.trim() ? value : "—";
+        }
+
+        function buildPatternText(prog, styleKey) {
+            const modifier = guitarStyles[styleKey];
+            const basePattern = prog.pattern || "—";
+            const suffix = modifier?.patternSuffix ? ` ${modifier.patternSuffix}` : "";
+            return basePattern + suffix;
+        }
+
+        function buildTechniqueText(prog, styleKey) {
+            const modifier = guitarStyles[styleKey];
+            const parts = [];
+            if (prog.technique) parts.push(prog.technique);
+            if (modifier?.techniqueNote) parts.push(modifier.techniqueNote);
+            return parts.join(" ");
+        }
+
+        function buildExtraText(prog, styleKey) {
+            const modifier = guitarStyles[styleKey];
+            const parts = [];
+            if (prog.extra) parts.push(prog.extra);
+            if (modifier?.extraNote) parts.push(modifier.extraNote);
+            return parts.join(" ");
+        }
 
         function pickRandomIndex(arr) {
             return Math.floor(Math.random() * arr.length);
         }
 
-        function setActiveEmotion(key) {
-            currentEmotionKey = key;
-            const emo = emotions[key];
-
-            // Highlight button
-            document.querySelectorAll(".emotion-btn").forEach(btn => {
-                btn.classList.toggle("active", btn.dataset.emotion === key);
-            });
-
-            // choose a random progression among 10
-            const idx = pickRandomIndex(emo.progressions);
-            currentProgIndex = idx;
-            const prog = emo.progressions[idx];
-
-            // Update main labels
-            currentEmotionEl.textContent = emo.emoji + " " + emo.label + ` · #${idx + 1}/` + emo.progressions.length;
+        function renderProgression(emo, prog, styleKey, idx, listLength) {
+            const styleInfo = guitarStyles[styleKey];
+            currentEmotionEl.textContent = emo.emoji + " " + emo.label + ` · #${idx + 1}/${listLength}`;
             currentSubEl.textContent = emo.description;
 
-            // Show chord pills
             progressionEl.innerHTML = "";
             prog.chords.forEach(chord => {
                 const span = document.createElement("span");
@@ -990,15 +1064,79 @@
                 progressionEl.appendChild(span);
             });
 
-            // Meta
             metaNameEl.textContent = prog.name;
-            metaPatternEl.textContent = prog.pattern;
-            metaTechniqueEl.textContent = prog.technique;
-            metaExtraEl.textContent = prog.extra;
+            metaStyleEl.textContent = styleInfo ? `${styleInfo.emoji} ${styleInfo.label} · ${styleInfo.summary}` : "—";
+            metaPatternEl.textContent = buildPatternText(prog, styleKey);
+            metaTechniqueEl.textContent = safeMetaValue(buildTechniqueText(prog, styleKey));
+            metaExtraEl.textContent = safeMetaValue(buildExtraText(prog, styleKey));
 
-            // Enable replay
             replayBtn.disabled = false;
         }
+
+        function pickStyleForEmotion(emotionKey) {
+            const emo = emotions[emotionKey];
+            if (!emo) return null;
+            const availableStyles = Object.keys(emo.styles).filter(style => activeStyleKeys.has(style));
+            if (!availableStyles.length) return null;
+            return availableStyles[pickRandomIndex(availableStyles)];
+        }
+
+        function setActiveEmotion(key) {
+            currentEmotionKey = key;
+            const emo = emotions[key];
+            if (!emo) return null;
+
+            document.querySelectorAll(".emotion-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.dataset.emotion === key);
+            });
+
+            const styleKey = pickStyleForEmotion(key);
+            if (!styleKey) return null;
+
+            const styleBucket = emo.styles[styleKey];
+            if (!styleBucket || !styleBucket.progressions.length) return null;
+
+            const idx = pickRandomIndex(styleBucket.progressions);
+            const prog = styleBucket.progressions[idx];
+            currentProgIndex = idx;
+            currentProgressionStyleKey = styleKey;
+
+            renderProgression(emo, prog, styleKey, idx, styleBucket.progressions.length);
+            return prog;
+        }
+
+        function updateStyleButtons() {
+            styleButtons.forEach(btn => {
+                const styleKey = btn.dataset.style;
+                const isActive = activeStyleKeys.has(styleKey);
+                btn.classList.toggle("active", isActive);
+                btn.setAttribute("aria-pressed", String(isActive));
+            });
+        }
+
+        styleButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const styleKey = btn.dataset.style;
+                if (!guitarStyles[styleKey]) return;
+                if (activeStyleKeys.has(styleKey)) {
+                    if (activeStyleKeys.size === 1) {
+                        return;
+                    }
+                    activeStyleKeys.delete(styleKey);
+                } else {
+                    activeStyleKeys.add(styleKey);
+                }
+                updateStyleButtons();
+                if (currentEmotionKey) {
+                    const prog = setActiveEmotion(currentEmotionKey);
+                    if (prog) {
+                        playProgressionObject(prog);
+                    }
+                }
+            });
+        });
+
+        updateStyleButtons();
 
         emotionsContainer.addEventListener("click", e => {
             const btn = e.target.closest(".emotion-btn");
@@ -1006,17 +1144,20 @@
             const key = btn.dataset.emotion;
             if (!key) return;
 
-            setActiveEmotion(key);
-            const emo = emotions[key];
-            const prog = emo.progressions[currentProgIndex];
-            playProgressionObject(prog);
+            const prog = setActiveEmotion(key);
+            if (prog) {
+                playProgressionObject(prog);
+            }
         });
 
         replayBtn.addEventListener("click", () => {
-            if (!currentEmotionKey && currentProgIndex === null) return;
+            if (!currentEmotionKey || currentProgIndex === null || !currentProgressionStyleKey) return;
             const emo = emotions[currentEmotionKey];
             if (!emo) return;
-            const prog = emo.progressions[currentProgIndex];
+            const styleBucket = emo.styles[currentProgressionStyleKey];
+            if (!styleBucket) return;
+            const prog = styleBucket.progressions[currentProgIndex];
+            if (!prog) return;
             playProgressionObject(prog);
         });
 
