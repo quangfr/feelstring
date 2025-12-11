@@ -4,7 +4,7 @@
   "description": "Tap a mood to unlock guitar chord progressions and let the practice synth accompany every feel.",
   "icons": [
     {
-      "src": "assets/icons/icon.svg",
+      "src": "assets/icons/logo.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }

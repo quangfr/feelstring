@@ -1,9 +1,9 @@
-const CACHE_NAME = "feel-string-v2025-12-11.1";
+const CACHE_NAME = "feel-string-v2025-12-11.4";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./assets/icons/icon.svg"
+  "./assets/icons/logo.svg"
 ];
 
 self.addEventListener("install", event => {
