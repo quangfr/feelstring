@@ -150,6 +150,26 @@
             gap: 8px;
         }
 
+        .panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button.round.favorite-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 28px;
+            padding: 4px 8px;
+        }
+
+        button.round.favorite-btn.hearted {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         .panel-header-left {
             display: flex;
             flex-direction: column;
@@ -166,11 +186,6 @@
         .panel-current {
             font-size: 0.9rem;
             font-weight: 600;
-        }
-
-        .panel-sub {
-            font-size: 0.65rem;
-            color: var(--muted);
         }
 
         .progression {
@@ -284,6 +299,7 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
+            cursor: pointer;
         }
 
         .chord-card.is-active {
@@ -356,6 +372,69 @@
 
         .style-btn:active {
             transform: translateY(1px);
+        }
+
+        .chord-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .chord-modal.is-visible {
+            display: flex;
+        }
+
+        .chord-modal__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 6, 12, 0.95);
+        }
+
+        .chord-modal__content {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            max-height: 100%;
+            border-radius: 20px;
+            background: rgba(5, 6, 12, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .chord-modal__grid {
+            overflow-y: auto;
+            padding-right: 4px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 6px;
+            max-height: calc(100vh - 140px);
+        }
+
+        .chord-modal__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.72rem;
+        }
+
+        .chord-modal__close {
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 4px 8px;
+            cursor: pointer;
         }
 
         button.round {
@@ -481,7 +560,7 @@
                 </h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">v2025.12.11.9</div>
+            <div class="pill">v2025.12.11.10</div>
         </header>
 
         <section class="emotion-section">
@@ -527,12 +606,17 @@
             <div class="panel-header">
                 <div class="panel-header-left">
                     <span class="panel-title">Chord progression</span>
-                    <span class="panel-current" id="currentEmotion">—</span>
-                    <span class="panel-sub" id="currentSub">Tap a mood to get 1 of 10 variations</span>
+                    <span class="panel-current" id="metaName">—</span>
                 </div>
-                <button class="round" id="replayBtn" disabled>
-                    ▶︎ Replay
-                </button>
+                <div class="panel-actions">
+                    <button class="round favorite-btn" id="favoriteBtn" aria-pressed="false"
+                        aria-label="Favorite chord progression">
+                        ♡
+                    </button>
+                    <button class="round" id="replayBtn" disabled>
+                        ▶︎ Replay
+                    </button>
+                </div>
             </div>
 
             <div class="progression-row">
@@ -553,24 +637,12 @@
             </div>
             <div class="play-meta">
                 <div class="meta-row">
-                    <span class="meta-label">Name</span>
-                    <span class="meta-value" id="metaName">—</span>
-                </div>
-                <div class="meta-row">
-                    <span class="meta-label">Style</span>
-                    <span class="meta-value meta-small" id="metaStyle">—</span>
-                </div>
-                <div class="meta-row">
                     <span class="meta-label">Strum</span>
                     <span class="meta-value" id="metaPattern">—</span>
                 </div>
                 <div class="meta-row">
                     <span class="meta-label">Technique</span>
                     <span class="meta-value" id="metaTechnique">—</span>
-                </div>
-                <div class="meta-row">
-                    <span class="meta-label">Info</span>
-                    <span class="meta-value meta-small" id="metaExtra">—</span>
                 </div>
             </div>
 
@@ -581,6 +653,18 @@
         <div class="text">Install Feel String for quick access & offline practice.</div>
         <button id="installBtn">Install</button>
         <button class="dismiss" id="installDismiss" aria-label="Dismiss install prompt">×</button>
+    </div>
+
+    <div class="chord-modal" id="chordModal" aria-hidden="true">
+        <div class="chord-modal__backdrop"></div>
+        <div class="chord-modal__content">
+            <div class="chord-modal__header">
+                <span>Select replacement chord</span>
+                <button class="chord-modal__close" id="chordModalClose" type="button"
+                    aria-label="Close chord picker">×</button>
+            </div>
+            <div class="chord-drawer__grid chord-modal__grid" id="chordModalGrid"></div>
+        </div>
     </div>
 
     <script>
@@ -635,6 +719,29 @@
         }
 
         // ---------- Chord voicings (simple, open-ish) ----------
+        const CUSTOM_PROGRESSIONS_KEY = "feel-string-chord-progressions";
+        const FAVORITE_PROGRESSIONS_KEY = "feel-string-loved-progressions";
+
+        function loadPersistedMap(key) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : {};
+            } catch (err) {
+                return {};
+            }
+        }
+
+        function persistMap(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (err) {
+                // ignore private mode restrictions
+            }
+        }
+
+        const customChordProgressions = loadPersistedMap(CUSTOM_PROGRESSIONS_KEY);
+        const favoriteProgressions = loadPersistedMap(FAVORITE_PROGRESSIONS_KEY);
+
         const chords = {
             // C family
             C: ["C4", "E4", "G4"],
@@ -674,6 +781,8 @@
             A5: ["A3", "E4", "A4"],
             G5: ["G3", "D4", "G4"]
         };
+        const chordOptions = Object.keys(chords).sort((a, b) => a.localeCompare(b));
+        const LONG_PRESS_DELAY = 420;
 
         // ---------- Emotions & 10 progressions each ----------
         // strum pattern legend examples: D = down, U = up, x = muted, H = hammer-on, P = pull-off
@@ -1068,10 +1177,13 @@
         ];
 
         function buildStyleProgressions(styleKey) {
-            return stylePairData.map(pair => ({
-                ...pair[styleKey],
-                emotions: pair.emotions
-            }));
+            return stylePairData.map(pair => {
+                const emotions = pair.emotions.filter(key => key !== "loved");
+                return {
+                    ...pair[styleKey],
+                    emotions
+                };
+            });
         }
 
         const styleProgressions = {
@@ -1108,6 +1220,10 @@
         let currentActiveChord = null;
         let currentProgChords = [];
         let currentTransposedChords = [];
+        let currentActiveChordIndex = 0;
+        let currentProgressionKey = null;
+        let currentProgRef = null;
+        let modalTargetChordIndex = null;
         const CHORD_SVG_NS = "http://www.w3.org/2000/svg";
 
         const baseEmotions = {
@@ -1160,6 +1276,47 @@
                 });
             });
         });
+        function ensureEmotionStyleBucket(emotionKey, styleKey) {
+            const emotion = emotions[emotionKey];
+            if (!emotion) return null;
+            if (!emotion.styles[styleKey]) {
+                emotion.styles[styleKey] = { progressions: [] };
+            }
+            return emotion.styles[styleKey];
+        }
+
+        function addFavoriteProgressionToLoved(key, entry) {
+            const bucket = ensureEmotionStyleBucket("loved", entry.style);
+            if (!bucket) return;
+            bucket.progressions.push({
+                name: entry.name,
+                chords: entry.chords.slice(),
+                pattern: entry.pattern,
+                technique: entry.technique,
+                extra: entry.extra,
+                emotions: ["loved"],
+                __progressionKey: key
+            });
+        }
+
+        function removeFavoriteProgressionFromLoved(key) {
+            const lovedBucket = emotions.loved?.styles;
+            if (!lovedBucket) return;
+            Object.values(lovedBucket).forEach(bucket => {
+                bucket.progressions = bucket.progressions.filter(prog => prog.__progressionKey !== key);
+            });
+        }
+
+        function syncFavoritesIntoLoved() {
+            const loved = emotions.loved;
+            if (!loved) return;
+            loved.styles = {};
+            Object.entries(favoriteProgressions).forEach(([key, entry]) => {
+                addFavoriteProgressionToLoved(key, entry);
+            });
+        }
+
+        syncFavoritesIntoLoved();
         // ---------- Audio engine ----------
         let audioCtx = null;
 
@@ -1215,17 +1372,18 @@
         // ---------- UI wiring ----------
         const emotionsContainer = document.getElementById("emotions");
         const progressionEl = document.getElementById("progression");
-        const currentEmotionEl = document.getElementById("currentEmotion");
-        const currentSubEl = document.getElementById("currentSub");
         const replayBtn = document.getElementById("replayBtn");
+        const favoriteBtn = document.getElementById("favoriteBtn");
         const metaNameEl = document.getElementById("metaName");
         const metaPatternEl = document.getElementById("metaPattern");
         const metaTechniqueEl = document.getElementById("metaTechnique");
-        const metaExtraEl = document.getElementById("metaExtra");
-        const metaStyleEl = document.getElementById("metaStyle");
         const styleButtons = document.querySelectorAll(".style-btn");
         const chordDrawer = document.getElementById("chordDrawer");
         const chordDrawerGrid = document.getElementById("chordDrawerGrid");
+        const chordModal = document.getElementById("chordModal");
+        const chordModalGrid = document.getElementById("chordModalGrid");
+        const chordModalClose = document.getElementById("chordModalClose");
+        const chordModalBackdrop = chordModal?.querySelector(".chord-modal__backdrop");
         const transposeValueEl = document.getElementById("transposeValue");
         const transposeButtons = document.querySelectorAll(".transpose-btn");
 
@@ -1253,12 +1411,19 @@
             return parts.join(" ");
         }
 
-        function buildExtraText(prog, styleKey) {
-            const modifier = guitarStyles[styleKey];
-            const parts = [];
-            if (prog.extra) parts.push(prog.extra);
-            if (modifier?.extraNote) parts.push(modifier.extraNote);
-            return parts.join(" ");
+        function getProgressionKey(styleKey, progName) {
+            return `${styleKey}|${progName}`;
+        }
+
+        function prepareProgressionChords(styleKey, prog) {
+            const key = getProgressionKey(styleKey, prog.name);
+            currentProgressionKey = key;
+            currentProgRef = prog;
+            const override = customChordProgressions[key];
+            if (Array.isArray(override)) {
+                return override.slice();
+            }
+            return prog.chords.slice();
         }
 
         function createChordSvg(chordName) {
@@ -1367,13 +1532,100 @@
             return card;
         }
 
-        function showChordDrawer(chords, activeChord) {
+        function showChordDrawer(chords, activeIndex = 0) {
             if (!chordDrawer || !chordDrawerGrid) return;
             chordDrawerGrid.innerHTML = "";
-            chords.forEach(chordObj => {
-                chordDrawerGrid.appendChild(createChordCard(chordObj, chordObj.original === activeChord));
+            chords.forEach((chordObj, idx) => {
+                const card = createChordCard(chordObj, idx === activeIndex);
+                setupChordCardInteractions(card, idx);
+                chordDrawerGrid.appendChild(card);
             });
-            currentActiveChord = activeChord || null;
+            currentActiveChord = chords[activeIndex]?.original || null;
+        }
+
+        function setupChordCardInteractions(card, idx) {
+            if (!card) return;
+            let holdTimer = null;
+            let triggeredLongPress = false;
+
+            const startHold = () => {
+                triggeredLongPress = false;
+                holdTimer = setTimeout(() => {
+                    triggeredLongPress = true;
+                    openChordModal(idx);
+                }, LONG_PRESS_DELAY);
+            };
+
+            const cancelHold = () => {
+                if (holdTimer) {
+                    clearTimeout(holdTimer);
+                    holdTimer = null;
+                }
+            };
+
+            card.addEventListener("pointerdown", startHold);
+            ["pointerup", "pointerleave", "pointercancel"].forEach(evt => {
+                card.addEventListener(evt, cancelHold);
+            });
+            card.addEventListener("click", event => {
+                if (triggeredLongPress) {
+                    triggeredLongPress = false;
+                    return;
+                }
+                if (idx === currentActiveChordIndex) {
+                    openChordModal(idx);
+                    return;
+                }
+                setActiveChordIndex(idx);
+            });
+        }
+
+        function setActiveChordIndex(idx) {
+            if (!currentTransposedChords.length) return;
+            const boundedIndex = Math.max(0, Math.min(idx, currentTransposedChords.length - 1));
+            currentActiveChordIndex = boundedIndex;
+            currentActiveChord = currentTransposedChords[boundedIndex].original;
+            showChordDrawer(currentTransposedChords, boundedIndex);
+        }
+
+        function openChordModal(index) {
+            if (!chordModal || !chordModalGrid || !currentProgChords.length) return;
+            modalTargetChordIndex = index;
+            chordModalGrid.innerHTML = "";
+            const activeChord = currentProgChords[index];
+            chordOptions.forEach(chordName => {
+                const card = createChordCard({ original: chordName, label: chordName }, chordName === activeChord);
+                card.addEventListener("click", () => handleChordReplacement(chordName));
+                chordModalGrid.appendChild(card);
+            });
+            chordModal.classList.add("is-visible");
+            chordModal.setAttribute("aria-hidden", "false");
+        }
+
+        function closeChordModal() {
+            if (!chordModal) return;
+            chordModal.classList.remove("is-visible");
+            chordModal.setAttribute("aria-hidden", "true");
+            modalTargetChordIndex = null;
+        }
+
+        function persistCustomChordProgression() {
+            if (!currentProgressionKey) return;
+            customChordProgressions[currentProgressionKey] = currentProgChords.slice();
+            persistMap(CUSTOM_PROGRESSIONS_KEY, customChordProgressions);
+        }
+
+        function handleChordReplacement(chordName) {
+            if (modalTargetChordIndex === null || modalTargetChordIndex === undefined) return;
+            currentProgChords[modalTargetChordIndex] = chordName;
+            currentActiveChordIndex = modalTargetChordIndex;
+            currentActiveChord = chordName;
+            persistCustomChordProgression();
+            if (isCurrentProgressionFavorited()) {
+                updateFavoriteEntryChords(currentProgressionKey, currentProgChords);
+            }
+            refreshChordDisplay();
+            closeChordModal();
         }
 
         function pickRandomIndex(arr) {
@@ -1381,57 +1633,120 @@
         }
 
         function renderProgression(emo, prog, styleKey, idx, listLength) {
-            const styleInfo = guitarStyles[styleKey];
-            currentEmotionEl.textContent = emo.emoji + " " + emo.label + ` · #${idx + 1}/${listLength}`;
-            currentSubEl.textContent = emo.description;
+            metaNameEl.textContent = prog.name;
 
-            currentProgChords = prog.chords;
-            const defaultChord = currentProgChords[0] || null;
-            currentActiveChord = defaultChord;
+            currentProgChords = prepareProgressionChords(styleKey, prog);
+            currentActiveChordIndex = 0;
+            currentActiveChord = currentProgChords[0] || null;
             refreshChordDisplay();
 
-            metaNameEl.textContent = prog.name;
-            metaStyleEl.textContent = styleInfo ? `${styleInfo.emoji} ${styleInfo.label} · ${styleInfo.summary}` : "—";
             metaPatternEl.textContent = buildPatternText(prog, styleKey);
             metaTechniqueEl.textContent = safeMetaValue(buildTechniqueText(prog, styleKey));
-            metaExtraEl.textContent = safeMetaValue(buildExtraText(prog, styleKey));
 
+            updateFavoriteButtonState();
             replayBtn.disabled = false;
+        }
+
+        function isCurrentProgressionFavorited() {
+            return !!(currentProgressionKey && favoriteProgressions[currentProgressionKey]);
+        }
+
+        function persistFavoriteProgressions() {
+            persistMap(FAVORITE_PROGRESSIONS_KEY, favoriteProgressions);
+        }
+
+        function updateFavoriteButtonState() {
+            if (!favoriteBtn) return;
+            const isLoved = isCurrentProgressionFavorited();
+            favoriteBtn.textContent = isLoved ? "♥" : "♡";
+            favoriteBtn.classList.toggle("hearted", isLoved);
+            favoriteBtn.setAttribute("aria-pressed", String(isLoved));
+            favoriteBtn.disabled = !currentProgressionKey;
+        }
+
+        function buildFavoriteEntryFromCurrent() {
+            if (!currentProgRef || !currentProgressionStyleKey) return null;
+            return {
+                name: currentProgRef.name,
+                style: currentProgressionStyleKey,
+                pattern: currentProgRef.pattern || "",
+                technique: currentProgRef.technique || "",
+                extra: currentProgRef.extra || "",
+                chords: currentProgChords.slice(),
+                sourceEmotion: currentEmotionKey
+            };
+        }
+
+        function addCurrentProgressionToFavorites() {
+            if (!currentProgressionKey) return;
+            const entry = buildFavoriteEntryFromCurrent();
+            if (!entry) return;
+            favoriteProgressions[currentProgressionKey] = entry;
+            persistFavoriteProgressions();
+            addFavoriteProgressionToLoved(currentProgressionKey, entry);
+        }
+
+        function removeCurrentProgressionFromFavorites() {
+            if (!currentProgressionKey) return;
+            delete favoriteProgressions[currentProgressionKey];
+            persistFavoriteProgressions();
+            removeFavoriteProgressionFromLoved(currentProgressionKey);
+        }
+
+        function updateFavoriteEntryChords(key, chords) {
+            const entry = favoriteProgressions[key];
+            if (!entry) return;
+            entry.chords = chords.slice();
+            persistFavoriteProgressions();
+            const lovedBucket = emotions.loved?.styles;
+            if (!lovedBucket) return;
+            Object.values(lovedBucket).forEach(bucket => {
+                bucket.progressions.forEach(prog => {
+                    if (prog.__progressionKey === key) {
+                        prog.chords = chords.slice();
+                    }
+                });
+            });
         }
 
         function refreshChordDisplay() {
             if (!progressionEl) return;
             progressionEl.innerHTML = "";
-            if (!currentProgChords.length) return;
+            if (!currentProgChords.length) {
+                currentTransposedChords = [];
+                showChordDrawer([], 0);
+                return;
+            }
 
-            currentTransposedChords = currentProgChords.map(chord => ({
+            currentTransposedChords = currentProgChords.map((chord, idx) => ({
                 original: chord,
-                label: transposeChordName(chord, currentTransposition)
+                label: transposeChordName(chord, currentTransposition),
+                index: idx
             }));
 
-            currentTransposedChords.forEach(chordObj => {
+            currentTransposedChords.forEach((chordObj, idx) => {
                 const span = document.createElement("span");
                 span.className = "chord-pill";
                 span.textContent = chordObj.label;
                 span.setAttribute("role", "button");
                 span.tabIndex = 0;
+                span.dataset.index = String(idx);
                 span.setAttribute("aria-label", chordObj.label + " chord diagram");
-                span.addEventListener("click", () => {
-                    currentActiveChord = chordObj.original;
-                    showChordDrawer(currentTransposedChords, chordObj.original);
-                });
+                span.addEventListener("click", () => setActiveChordIndex(idx));
                 span.addEventListener("keydown", event => {
                     if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        currentActiveChord = chordObj.original;
-                        showChordDrawer(currentTransposedChords, chordObj.original);
+                        setActiveChordIndex(idx);
                     }
                 });
                 progressionEl.appendChild(span);
             });
 
-            const activeChord = currentActiveChord || currentProgChords[0];
-            showChordDrawer(currentTransposedChords, activeChord);
+            if (currentActiveChordIndex >= currentTransposedChords.length) {
+                currentActiveChordIndex = 0;
+            }
+            currentActiveChord = currentTransposedChords[currentActiveChordIndex]?.original || currentProgChords[0];
+            showChordDrawer(currentTransposedChords, currentActiveChordIndex);
         }
 
         function pickStyleForEmotion(emotionKey) {
@@ -1497,6 +1812,17 @@
             });
         });
 
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener("click", () => {
+                if (isCurrentProgressionFavorited()) {
+                    removeCurrentProgressionFromFavorites();
+                } else {
+                    addCurrentProgressionToFavorites();
+                }
+                updateFavoriteButtonState();
+            });
+        }
+
         function updateTransposeUi() {
             if (transposeValueEl) {
                 transposeValueEl.textContent = currentTransposition > 0 ? `+${currentTransposition}` : `${currentTransposition}`;
@@ -1553,6 +1879,28 @@
             const prog = styleBucket.progressions[currentProgIndex];
             if (!prog) return;
             playProgressionObject(prog);
+        });
+
+        if (chordModalClose) {
+            chordModalClose.addEventListener("click", closeChordModal);
+        }
+
+        if (chordModalBackdrop) {
+            chordModalBackdrop.addEventListener("click", closeChordModal);
+        }
+
+        if (chordModal) {
+            chordModal.addEventListener("click", event => {
+                if (event.target === chordModal) {
+                    closeChordModal();
+                }
+            });
+        }
+
+        window.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                closeChordModal();
+            }
         });
 
         const installBanner = document.getElementById("installBanner");
