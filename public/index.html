@@ -569,7 +569,7 @@
                 </h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">v2025.12.29</div>
+            <div class="pill">v2025.12.29.1</div>
         </header>
 
         <section class="emotion-section">
@@ -1378,6 +1378,11 @@
             });
         }
 
+        function playCurrentProgression() {
+            if (!currentProgChords.length) return;
+            playProgressionObject({ chords: currentProgChords });
+        }
+
         // ---------- UI wiring ----------
         const emotionsContainer = document.getElementById("emotions");
         const progressionEl = document.getElementById("progression");
@@ -1634,6 +1639,7 @@
                 updateFavoriteEntryChords(currentProgressionKey, currentProgChords);
             }
             refreshChordDisplay();
+            playCurrentProgression();
             closeChordModal();
         }
 
@@ -1654,6 +1660,7 @@
 
             updateFavoriteButtonState();
             replayBtn.disabled = false;
+            playCurrentProgression();
         }
 
         function isCurrentProgressionFavorited() {
@@ -1813,10 +1820,7 @@
                 }
                 updateStyleButtons();
                 if (currentEmotionKey) {
-                    const prog = setActiveEmotion(currentEmotionKey);
-                    if (prog) {
-                        playProgressionObject(prog);
-                    }
+                    setActiveEmotion(currentEmotionKey);
                 }
             });
         });
@@ -1862,10 +1866,7 @@
         updateStyleButtons();
         updateTransposeUi();
 
-        const defaultProg = setActiveEmotion("happy");
-        if (defaultProg) {
-            playProgressionObject(defaultProg);
-        }
+        setActiveEmotion("happy");
 
         emotionsContainer.addEventListener("click", e => {
             const btn = e.target.closest(".emotion-btn");
@@ -1873,21 +1874,12 @@
             const key = btn.dataset.emotion;
             if (!key) return;
 
-            const prog = setActiveEmotion(key);
-            if (prog) {
-                playProgressionObject(prog);
-            }
+            setActiveEmotion(key);
         });
 
         replayBtn.addEventListener("click", () => {
-            if (!currentEmotionKey || currentProgIndex === null || !currentProgressionStyleKey) return;
-            const emo = emotions[currentEmotionKey];
-            if (!emo) return;
-            const styleBucket = emo.styles[currentProgressionStyleKey];
-            if (!styleBucket) return;
-            const prog = styleBucket.progressions[currentProgIndex];
-            if (!prog) return;
-            playProgressionObject(prog);
+            if (!currentProgChords.length) return;
+            playCurrentProgression();
         });
 
         if (chordModalClose) {
