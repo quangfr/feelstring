@@ -569,7 +569,7 @@
                 </h1>
                 <small>Tap a feeling → random progression</small>
             </div>
-            <div class="pill">v2025.12.29.1</div>
+                <div class="pill" id="versionPill" role="button" aria-label="Reload with update param">v2025.12.30</div>
         </header>
 
         <section class="emotion-section">
@@ -1903,6 +1903,19 @@
                 closeChordModal();
             }
         });
+
+        const versionPill = document.getElementById("versionPill");
+        if (versionPill) {
+            versionPill.addEventListener("click", () => {
+                try {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("v", "update");
+                    window.location.href = url.toString();
+                } catch (err) {
+                    window.location.reload();
+                }
+            });
+        }
 
         const installBanner = document.getElementById("installBanner");
         const installBtn = document.getElementById("installBtn");
